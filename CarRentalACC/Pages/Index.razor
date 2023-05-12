@@ -1,0 +1,40 @@
+﻿@page "/"
+@using CarRentalACC.Data
+@inject ICarsService carsService
+
+<PageTitle>Samochody</PageTitle>
+
+@if (cars == null)
+{
+<p>Loading...</p>
+}
+else
+{
+<div class="container">
+    <div class="row">
+        @foreach (var car in cars)
+        {
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <h5 class="card-title">@car.Model</h5>
+                    <p class="card-text">@car.Description</p>
+                    <p class="card-text"><b>Cena:</b> @car.Price zł </p>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+}
+
+
+@code {
+    List<Car> cars;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cars = await carsService.GetCars();
+    }
+
+}

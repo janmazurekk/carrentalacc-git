@@ -1,0 +1,91 @@
+﻿@page "/cars"
+@using CarRentalACC.Data
+@inject ICarsService carsService
+
+<PageTitle>Samochody</PageTitle>
+
+<h2>Dodaj samochód</h2>
+
+<form>
+    <div class="form-group">
+        <label for="InputModel">Model</label>
+        <input type="text" class="form-control" @bind-value="@model" placeholder="wpisz model" />
+    </div>
+    <div class="form-group">
+        <label for="InputDescription">Opis</label>
+        <input type="text" class="form-control" @bind-value="@description" placeholder="wpisz opis" />
+    </div>
+    <div class="form-group">
+        <label for="InputPrice">Cena</label>
+        <input type="number" class="form-control" @bind-value="@price" placeholder="wpisz cenę" />
+    </div>
+    <div class="form-group">
+        <label for="InputImage">Zdjęcie</label>
+        <input type="file" class="form-control"/>
+    </div>
+    <br />
+    <button @onclick="AddCar" class="btn btn-primary">Dodaj</button>
+</form>
+
+<br />
+
+@if (cars == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Model</th>
+                <th>Opis</th>
+                <th>Cena</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in cars)
+            {
+                <tr>
+                    <td>@car.Id</td>
+                    <td>@car.Model</td>
+                    <td>@car.Description</td>
+                    <td>@car.Price</td>
+                    <td>
+                        <a href="#edit" class="edit" data-toggle="modal"><span class="oi oi-pencil" aria-hidden="true"></span></a>
+                        <a href="#delete" class="delete" data-toggle="modal"><span class="oi oi-trash" aria-hidden="true"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<Car> cars;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cars = await carsService.GetCars();
+    }
+
+    private string model;
+    private string description;
+    private float price;
+    private int carId;
+
+    private async Task AddCar()
+    {
+        await carsService.AddCar(model, description, price);
+    }
+
+    private async Task RemoveCar()
+    {
+        await carsService.RemoveCar(carId);
+    }
+
+
+}
